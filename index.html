@@ -2,43 +2,77 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ローカルファイルマネージャ</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ローカルファイルマネージャー</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
-    <header>
-        <h1>ローカルファイルマネージャ</h1>
-    </header>
+    <div id="app" class="light">
 
-    <div id="controls">
-        <button onclick="openFolder()">フォルダを開く</button>
-        <button onclick="goUp()">⬆ 上へ</button>
-        <input type="text" id="search-box" placeholder="検索" oninput="filterFiles()">
-        <select id="sort-select" onchange="sortAndRender()">
-            <option value="name">名前順</option>
-            <option value="date">更新日順</option>
-        </select>
-        <button onclick="toggleSortOrder()">↕ 並び替え切替</button>
-        <button onclick="downloadZip()">📦 ZIPでダウンロード</button>
-        <button onclick="saveFile()">💾 保存</button>
+        <header>
+            <h1>ローカルファイルマネージャー</h1>
+            <div id="breadcrumbs"></div>
+            <div id="toolbar">
+                <button onclick="openFolder()">フォルダを開く</button>
+                <button onclick="goUp()">上へ戻る</button>
+                <button onclick="toggleViewMode()">表示切替 (リスト/グリッド)</button>
+                <button onclick="toggleSortOrder()">並び替え (昇/降)</button>
+                <button onclick="toggleDarkMode()">ダークモード切替</button>
+                <button onclick="createNewFolder()">新規フォルダ作成</button>
+                <input type="file" id="file-upload" multiple webkitdirectory directory style="display:none"
+                    onchange="uploadFiles(event)" />
+                <button onclick="document.getElementById('file-upload').click()">ファイルアップロード</button>
+                <button onclick="deleteSelectedFiles()">削除</button>
+                <button onclick="zipSelectedFiles()">ZIP化</button>
+                <button onclick="selectAllFiles(true)">すべて選択</button>
+                <button onclick="selectAllFiles(false)">選択解除</button>
+            </div>
+        </header>
+
+        <section id="search-section">
+            <input type="text" id="search-box" placeholder="ファイル名または内容検索" oninput="filterFiles()" />
+            <select id="file-type-filter" onchange="filterFiles()">
+                <option value="">種類すべて</option>
+                <option value="image">画像</option>
+                <option value="pdf">PDF</option>
+                <option value="audio">音声</option>
+                <option value="video">動画</option>
+                <option value="text">テキスト</option>
+                <option value="other">その他</option>
+            </select>
+            <input type="number" id="min-size" placeholder="最小サイズ KB" min="0" oninput="filterFiles()" />
+            <input type="number" id="max-size" placeholder="最大サイズ KB" min="0" oninput="filterFiles()" />
+            <input type="date" id="min-date" onchange="filterFiles()" />
+            <input type="date" id="max-date" onchange="filterFiles()" />
+        </section>
+
+        <main>
+            <div id="file-list" class="list"></div>
+
+            <aside id="file-details">
+                <div id="info-box"></div>
+                <div id="preview-controls" style="display:none;">
+                    <button onclick="reloadPreview()">プレビュー再読み込み</button>
+                </div>
+                <div id="file-content-container">
+                    <textarea id="file-content" readonly></textarea>
+                    <img id="image-preview" alt="画像プレビュー" style="display:none" />
+                    <iframe id="pdf-preview" style="display:none" frameborder="0"></iframe>
+                    <audio id="audio-preview" controls style="display:none"></audio>
+                    <video id="video-preview" controls style="display:none" width="100%"></video>
+                    <div id="markdown-preview" style="display:none;overflow:auto;"></div>
+                </div>
+            </aside>
+        </main>
+
+        <footer>
+            <div id="log-area">操作ログ:</div>
+        </footer>
+
     </div>
-
-    <div id="file-list" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
-        <!-- ファイル一覧 -->
-    </div>
-
-    <div id="info-box">
-        <!-- ファイル情報表示 -->
-    </div>
-
-    <textarea id="file-content"></textarea>
-    <img id="image-preview" alt="画像プレビュー">
-    <iframe id="pdf-preview"></iframe>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="script.js"></script>
 </body>
 
