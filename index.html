@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ローカルファイルマネージャ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>ローカルファイルマネージャ</h1>
+    </header>
+
+    <div id="controls">
+        <button onclick="openFolder()">フォルダを開く</button>
+        <button onclick="goUp()">⬆ 上へ</button>
+        <input type="text" id="search-box" placeholder="検索" oninput="filterFiles()">
+        <select id="sort-select" onchange="sortAndRender()">
+            <option value="name">名前順</option>
+            <option value="date">更新日順</option>
+        </select>
+        <button onclick="toggleSortOrder()">↕ 並び替え切替</button>
+        <button onclick="downloadZip()">📦 ZIPでダウンロード</button>
+        <button onclick="saveFile()">💾 保存</button>
+    </div>
+
+    <div id="file-list" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+        <!-- ファイル一覧 -->
+    </div>
+
+    <div id="info-box">
+        <!-- ファイル情報表示 -->
+    </div>
+
+    <textarea id="file-content"></textarea>
+    <img id="image-preview" alt="画像プレビュー">
+    <iframe id="pdf-preview"></iframe>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
